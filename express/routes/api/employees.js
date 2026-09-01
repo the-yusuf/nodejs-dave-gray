@@ -7,13 +7,15 @@ const {
   deleteEmployee,
   getEmployeeById,
 } = require("../../controllers/employees.controller");
+const ROLES_LIST = require("../../config/roles_list");
+const verifyRoles = require("../../middleware/verifyRoles");
 
 router
   .route("/")
   .get(gettAllEmployees)
-  .post(createNewEmployee)
-  .put(updateEmployee)
-  .delete(deleteEmployee);
+  .post(verifyRoles(ROLES_LIST.Admin, ROLES_LIST.Editor), createNewEmployee)
+  .put(verifyRoles(ROLES_LIST.Admin, ROLES_LIST.Editor), updateEmployee)
+  .delete(verifyRoles(ROLES_LIST.Admin), deleteEmployee);
 
 router.route("/:id").get(getEmployeeById);
 
